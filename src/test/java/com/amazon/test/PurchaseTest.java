@@ -8,6 +8,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -35,12 +36,11 @@ public class PurchaseTest {
         WebElement refrigerator;
         // Page objects
         HomePage homePage = new HomePage(this.driver);
-        CartProduct cartPage = new CartProduct(driver);
 
         // Read data
-        String query = "refregerador";
+        String query = "refrigerador";
         String product1 = "Samsung";
-        String product2 = "Mabe";
+        String product2 = "Grafito Mabe";
 
         // Get first fridge
         homePage.searchProduct(query);
@@ -49,17 +49,19 @@ public class PurchaseTest {
         refrigerator.click();
         //ProductPage fridge1 = new ProductPage(this.driver);
 
-        WebElement btnAddCart = this.driver.findElement(By.id("add-to-cart-button"));
-        btnAddCart.click();
-
         try {
-            wait(14000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+            WebElement btnAddCart = this.driver.findElement(By.id("add-to-cart-button"));
+            btnAddCart.click();
 
-        WebElement noProteccionBtn = this.driver.findElement(By.id("attachSiNoCoverage-announce"));
-        noProteccionBtn.click();
+            // Click not protection
+            WebElement noProteccionBtn = this.driver.findElement(By.id("attachSiNoCoverage-announce"));
+            //WebElement frame = this.driver.findElement(By.id("attach-warranty-display"));
+            //this.driver.switchTo().frame(frame);
+            noProteccionBtn.click();
+
+        } catch (Exception e) {
+            System.out.println("The store doesn't have inventory for this product");
+        }
 
         this.driver.navigate().back();
         this.driver.navigate().back();
@@ -69,7 +71,19 @@ public class PurchaseTest {
         refrigerator = productPage.getProduct(product2);
         refrigerator.click();
 
+        try {
+            WebElement btnAddCart = this.driver.findElement(By.id("add-to-cart-button"));
+            btnAddCart.click();
+        } catch (Exception e) {
+            System.out.println("The store doesn't have inventory for this product");
+        }
 
+        homePage.backHomePage();
+        homePage.goCart();
+        CartProduct cartPage = new CartProduct(driver);
+        Float total = cartPage.getTotal();
+
+        Assert.assertEquals(total, 10000);
 
     }
 

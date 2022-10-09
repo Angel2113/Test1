@@ -7,7 +7,7 @@ import org.openqa.selenium.support.PageFactory;
 
 public class HomePage {
 
-
+    private static String MAIN_URL = "https://www.amazon.com.mx/";
 
     private WebDriver driver;
 
@@ -16,6 +16,9 @@ public class HomePage {
 
     @FindBy(id="nav-search-submit-button")
     WebElement searchBtn;
+
+    @FindBy(id="nav-cart")
+    WebElement cartBtn;
 
 
     public HomePage(WebDriver driver) {
@@ -30,6 +33,14 @@ public class HomePage {
     public void searchProduct(String product){
         searchBar.sendKeys(product);
         searchBtn.click();
+    }
+
+    public void backHomePage(){
+        this.driver.get(MAIN_URL);
+    }
+
+    public void goCart(){
+        cartBtn.click();
     }
 
 }
